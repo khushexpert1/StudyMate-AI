@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { SetupGuideModal } from './components/SetupGuideModal';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
 import { DashboardView } from './components/sections/DashboardView';
@@ -10,7 +11,7 @@ import { SmartNotesAnalyzerView } from './components/sections/SmartNotesAnalyzer
 import { StudentProfileView } from './components/sections/StudentProfileView';
 import { StudyPlannerView } from './components/sections/StudyPlannerView';
 import { useStudyStore } from './hooks/useStudyStore';
-import { fetchApiHealth } from './services/api';
+import { fetchApiHealth, GEMINI_KEY_CHANGED_EVENT } from './services/api';
 import { ApiHealthStatus, NavSectionId } from './types/study';
 
 const VALID_SECTIONS: NavSectionId[] = [
@@ -33,6 +34,7 @@ function getInitialSection(): NavSectionId {
 export default function App() {
   const [activeSection, setActiveSection] = useState<NavSectionId>(getInitialSection);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [setupModalOpen, setSetupModalOpen] = useState(false);
   const [apiHealth, setApiHealth] = useState<ApiHealthStatus | null>(null);
 
   const {
@@ -70,27 +72,21 @@ export default function App() {
     addTopic,
   } = useStudyStore();
 
-  useEffect(() => {
-    let cancelled = false;
-    fetchApiHealth()
-      .then((health) => {
-        if (!cancelled) setApiHealth(health);
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setApiHealth({
-            status: 'error',
-            service: 'StudyMate AI Backend',
-            geminiConfigured: false,
-            aiFeaturesEnabled: false,
-            model: 'gemini-4-hydrogen',
-          });
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
+  const refreshApiHealth = useCallback(() => {
+    fetchApiHealth().then((health) => {
+      setApiHealth(health);
+    });
   }, []);
+
+  useEffect(() => {
+    refreshApiHealth();
+    window.addEventListener(GEMINI_KEY_CHANGED_EVENT, refreshApiHealth);
+    window.addEventListener('storage', refreshApiHealth);
+    return () => {
+      window.removeEventListener(GEMINI_KEY_CHANGED_EVENT, refreshApiHealth);
+      window.removeEventListener('storage', refreshApiHealth);
+    };
+  }, [refreshApiHealth]);
 
   const handleSelectSection = (section: NavSectionId) => {
     setActiveSection(section);
@@ -129,7 +125,9 @@ export default function App() {
           hasDemoData={state.hasDemoData}
           branch={state.studentProfile.branch}
           semester={state.studentProfile.semester}
+          geminiConfigured={apiHealth?.geminiConfigured ?? true}
           onOpenMobileMenu={() => setMobileMenuOpen(true)}
+          onOpenSetupGuide={() => setSetupModalOpen(true)}
           onNavigate={handleSelectSection}
         />
 
@@ -141,6 +139,7 @@ export default function App() {
               onboardingDismissed={state.onboardingDismissed}
               onDismissOnboarding={dismissOnboarding}
               onReopenOnboarding={reopenOnboarding}
+              onOpenSetupGuide={() => setSetupModalOpen(true)}
               hasDemoData={state.hasDemoData}
               includeSampleData={state.includeSampleData}
               onToggleSampleData={setIncludeSampleData}
@@ -187,6 +186,7 @@ export default function App() {
               onAddNote={addUploadedNote}
               onSaveAnalysis={saveNoteAnalysis}
               onRemoveNote={removeUploadedNote}
+              onOpenSetupGuide={() => setSetupModalOpen(true)}
             />
           )}
 
@@ -201,6 +201,7 @@ export default function App() {
               onSelectThread={selectDoubtThread}
               onAppendExchange={appendDoubtExchange}
               onClearHistory={clearDoubtMessages}
+              onOpenSetupGuide={() => setSetupModalOpen(true)}
             />
           )}
 
@@ -214,6 +215,7 @@ export default function App() {
               onSaveGeneratedQuiz={saveGeneratedQuiz}
               onDeleteSavedQuiz={deleteSavedQuiz}
               onRecordAttempt={recordQuizAttempt}
+              onOpenSetupGuide={() => setSetupModalOpen(true)}
             />
           )}
 
@@ -229,6 +231,7 @@ export default function App() {
               onAddGeneratedSchedule={addGeneratedSchedule}
               onToggleTask={toggleStudyTask}
               onDeleteTask={deleteStudyTask}
+              onOpenSetupGuide={() => setSetupModalOpen(true)}
             />
           )}
 
@@ -242,6 +245,7 @@ export default function App() {
               onAddNote={addExamNote}
               onToggleBookmark={toggleExamNoteBookmark}
               onDeleteNote={deleteExamNote}
+              onOpenSetupGuide={() => setSetupModalOpen(true)}
             />
           )}
 
@@ -274,6 +278,13 @@ export default function App() {
           )}
         </main>
       </div>
+
+      <SetupGuideModal
+        isOpen={setupModalOpen}
+        onClose={() => setSetupModalOpen(false)}
+        profile={state.studentProfile}
+        onNavigate={handleSelectSection}
+      />
     </div>
   );
 }

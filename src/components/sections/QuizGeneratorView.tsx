@@ -28,6 +28,7 @@ interface QuizGeneratorViewProps {
   onSaveGeneratedQuiz: (quiz: Omit<QuizPack, 'id' | 'isDemo' | 'createdAt'>) => QuizPack;
   onDeleteSavedQuiz: (id: string) => void;
   onRecordAttempt: (attempt: Omit<QuizAttempt, 'id' | 'completedAt' | 'isDemo'>) => void;
+  onOpenSetupGuide?: () => void;
 }
 
 export const QuizGeneratorView: React.FC<QuizGeneratorViewProps> = ({
@@ -39,6 +40,7 @@ export const QuizGeneratorView: React.FC<QuizGeneratorViewProps> = ({
   onSaveGeneratedQuiz,
   onDeleteSavedQuiz,
   onRecordAttempt,
+  onOpenSetupGuide,
 }) => {
   const activeSubjects = subjects.length > 0 ? subjects : [...COURSES];
   const notesWithText = uploadedNotes.filter(
@@ -188,6 +190,7 @@ export const QuizGeneratorView: React.FC<QuizGeneratorViewProps> = ({
         successMessage={successMsg}
         onDismissError={() => setErrorMsg(null)}
         onDismissSuccess={() => setSuccessMsg(null)}
+        onOpenSetupGuide={onOpenSetupGuide}
       />
 
       {!activeQuiz ? (

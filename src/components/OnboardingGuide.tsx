@@ -1,16 +1,19 @@
 import React from 'react';
-import { BookOpen, Download, UploadCloud, UserCog, X } from 'lucide-react';
+import { BookOpen, Download, KeyRound, UploadCloud, UserCog, X } from 'lucide-react';
+import { downloadSampleEducationalPdf } from '../services/pdf';
 import { NavSectionId, StudentProfile } from '../types/study';
 
 interface OnboardingGuideProps {
   profile: StudentProfile;
   onNavigate: (section: NavSectionId) => void;
+  onOpenSetupModal: () => void;
   onDismiss: () => void;
 }
 
 export const OnboardingGuide: React.FC<OnboardingGuideProps> = ({
   profile,
   onNavigate,
+  onOpenSetupModal,
   onDismiss,
 }) => {
   return (
@@ -46,12 +49,12 @@ export const OnboardingGuide: React.FC<OnboardingGuideProps> = ({
           <p className="text-xs font-mono text-violet-400">01. Upload Personal Notes</p>
           <p className="text-sm font-medium text-white">Add Lecture PDFs or Text Notes</p>
           <p className="text-xs text-slate-400 leading-relaxed">
-            Open Smart Notes Analyzer and upload any text-based PDF, .txt, or .md file (up to 15 MB) to extract text and generate AI summaries and exam questions—or download our sample educational PDF to test it first.
+            Open Smart Notes Analyzer and upload any text-based PDF, .txt, or .md file (up to 15 MB) to extract text in your browser and generate AI summaries—or download our sample educational PDF to test it first.
           </p>
         </div>
 
         <div className="rounded-lg border border-slate-800/90 bg-[#0B1120] p-4 space-y-2">
-          <p className="text-xs font-mono text-violet-400">02. Customize Subjects & Plan</p>
+          <p className="text-xs font-mono text-violet-400">02. Customize Subjects &amp; Plan</p>
           <p className="text-sm font-medium text-white">Review Your Student Profile</p>
           <p className="text-xs text-slate-400 leading-relaxed">
             Your profile starts with {profile.subjects.join(', ')}. Edit your branch, semester, subjects, or daily study goal anytime in Student Profile, and customize the sample study plan.
@@ -59,8 +62,8 @@ export const OnboardingGuide: React.FC<OnboardingGuideProps> = ({
         </div>
 
         <div className="rounded-lg border border-slate-800/90 bg-[#0B1120] p-4 space-y-2">
-          <p className="text-xs font-mono text-violet-400">03. Practice & Track Real Progress</p>
-          <p className="text-sm font-medium text-white">Test Quizzes, Doubts & Exam Notes</p>
+          <p className="text-xs font-mono text-violet-400">03. Practice &amp; Track Real Progress</p>
+          <p className="text-sm font-medium text-white">Test Quizzes, Doubts &amp; Exam Notes</p>
           <p className="text-xs text-slate-400 leading-relaxed">
             Click any sample topic in Quiz Generator, AI Doubt Solver, or Exam Notes Generator. Only your real quiz attempts, completed topics, and logged study blocks count toward your actual progress.
           </p>
@@ -77,14 +80,23 @@ export const OnboardingGuide: React.FC<OnboardingGuideProps> = ({
           <span>Upload Personal Notes</span>
         </button>
 
-        <a
-          href="/api/sample-notes/pdf"
-          download="AI_ML_Sem1_Data_Driven_AI_Sample_Notes.pdf"
+        <button
+          type="button"
+          onClick={downloadSampleEducationalPdf}
           className="inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-medium rounded-lg border border-violet-500/40 bg-violet-600/15 text-violet-200 hover:bg-violet-600/25 transition-colors whitespace-nowrap"
         >
           <Download className="h-4 w-4" />
           <span>Download Sample PDF</span>
-        </a>
+        </button>
+
+        <button
+          type="button"
+          onClick={onOpenSetupModal}
+          className="inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-medium rounded-lg border border-slate-700 bg-[#0B1120] text-slate-200 hover:border-violet-500/50 hover:text-white transition-colors whitespace-nowrap"
+        >
+          <KeyRound className="h-4 w-4 text-violet-400" />
+          <span>Setup Guide &amp; API Key</span>
+        </button>
 
         <button
           type="button"

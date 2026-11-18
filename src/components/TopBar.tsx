@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Plus, Sparkles } from 'lucide-react';
+import { HelpCircle, Menu, Plus, Sparkles } from 'lucide-react';
 import { NavSectionId } from '../types/study';
 import { NAV_ITEMS } from './Sidebar';
 
@@ -8,7 +8,9 @@ interface TopBarProps {
   hasDemoData: boolean;
   branch: string;
   semester: number;
+  geminiConfigured?: boolean;
   onOpenMobileMenu: () => void;
+  onOpenSetupGuide: () => void;
   onNavigate: (section: NavSectionId) => void;
 }
 
@@ -17,7 +19,9 @@ export const TopBar: React.FC<TopBarProps> = ({
   hasDemoData,
   branch,
   semester,
+  geminiConfigured = true,
   onOpenMobileMenu,
+  onOpenSetupGuide,
   onNavigate,
 }) => {
   const currentItem = NAV_ITEMS.find((item) => item.id === activeSection) ?? NAV_ITEMS[0];
@@ -65,7 +69,20 @@ export const TopBar: React.FC<TopBarProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-2.5 shrink-0">
+        <button
+          type="button"
+          onClick={onOpenSetupGuide}
+          className={`inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border transition-colors whitespace-nowrap shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 ${
+            !geminiConfigured
+              ? 'border-amber-500/50 bg-amber-950/30 text-amber-200 hover:bg-amber-900/40'
+              : 'border-slate-700/80 bg-[#0F172A] text-slate-200 hover:border-violet-500/50 hover:text-white'
+          }`}
+        >
+          <HelpCircle className={`h-3.5 w-3.5 ${!geminiConfigured ? 'text-amber-300' : 'text-violet-400'}`} />
+          <span>Setup Guide</span>
+        </button>
+
         <button
           type="button"
           onClick={() => onNavigate(primaryAction.target)}

@@ -38,6 +38,7 @@ interface StudyPlannerViewProps {
   ) => void;
   onToggleTask: (id: string) => void;
   onDeleteTask: (id: string) => void;
+  onOpenSetupGuide?: () => void;
 }
 
 export const StudyPlannerView: React.FC<StudyPlannerViewProps> = ({
@@ -51,6 +52,7 @@ export const StudyPlannerView: React.FC<StudyPlannerViewProps> = ({
   onAddGeneratedSchedule,
   onToggleTask,
   onDeleteTask,
+  onOpenSetupGuide,
 }) => {
   const activeSubjects = enrolledSubjects.length > 0 ? enrolledSubjects : [...COURSES];
   const [selectedDay, setSelectedDay] = useState<'All' | DayOfWeek>('All');
@@ -218,6 +220,7 @@ export const StudyPlannerView: React.FC<StudyPlannerViewProps> = ({
         successMessage={successMsg}
         onDismissError={() => setErrorMsg(null)}
         onDismissSuccess={() => setSuccessMsg(null)}
+        onOpenSetupGuide={onOpenSetupGuide}
       />
 
       {demoTasksExist && (

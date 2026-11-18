@@ -24,6 +24,7 @@ interface ExamNotesViewProps {
   onAddNote: (note: Omit<ExamNote, 'id' | 'updatedAt' | 'bookmarked' | 'isDemo'>) => void;
   onToggleBookmark: (id: string) => void;
   onDeleteNote: (id: string) => void;
+  onOpenSetupGuide?: () => void;
 }
 
 function formatExamNoteMarkdown(note: ExamNote): string {
@@ -64,6 +65,7 @@ export const ExamNotesView: React.FC<ExamNotesViewProps> = ({
   onAddNote,
   onToggleBookmark,
   onDeleteNote,
+  onOpenSetupGuide,
 }) => {
   const activeSubjects = subjects.length > 0 ? subjects : [...COURSES];
   const notesWithText = uploadedNotes.filter(
@@ -241,6 +243,7 @@ export const ExamNotesView: React.FC<ExamNotesViewProps> = ({
         successMessage={successMsg}
         onDismissError={() => setErrorMsg(null)}
         onDismissSuccess={() => setSuccessMsg(null)}
+        onOpenSetupGuide={onOpenSetupGuide}
       />
 
       {/* AI Exam Notes Generator Form */}

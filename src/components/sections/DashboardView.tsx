@@ -48,6 +48,7 @@ interface DashboardViewProps {
   onboardingDismissed: boolean;
   onDismissOnboarding: () => void;
   onReopenOnboarding: () => void;
+  onOpenSetupGuide: () => void;
   hasDemoData: boolean;
   includeSampleData: boolean;
   onToggleSampleData: (include: boolean) => void;
@@ -132,6 +133,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onboardingDismissed,
   onDismissOnboarding,
   onReopenOnboarding,
+  onOpenSetupGuide,
   hasDemoData,
   includeSampleData,
   onToggleSampleData,
@@ -188,16 +190,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-          {onboardingDismissed && (
-            <button
-              type="button"
-              onClick={onReopenOnboarding}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-slate-700/80 bg-[#0F172A] text-slate-300 hover:text-white hover:border-violet-500/50 transition-colors whitespace-nowrap"
-            >
-              <HelpCircle className="h-3.5 w-3.5 text-violet-400" />
-              <span>Setup Guide</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => {
+              onReopenOnboarding();
+              onOpenSetupGuide();
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-slate-700/80 bg-[#0F172A] text-slate-300 hover:text-white hover:border-violet-500/50 transition-colors whitespace-nowrap"
+          >
+            <HelpCircle className="h-3.5 w-3.5 text-violet-400" />
+            <span>Setup Guide</span>
+          </button>
 
           <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#0F172A] border border-slate-800">
             <button
@@ -239,6 +242,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <OnboardingGuide
           profile={studentProfile}
           onNavigate={onNavigate}
+          onOpenSetupModal={onOpenSetupGuide}
           onDismiss={onDismissOnboarding}
         />
       )}
@@ -277,7 +281,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </button>
       </section>
 
-      <AiStatusBanner apiHealth={apiHealth} />
+      <AiStatusBanner apiHealth={apiHealth} onOpenSetupGuide={onOpenSetupGuide} />
 
       {!includeSampleData && !hasAnyRealActivity && (
         <DemoNoticeBanner

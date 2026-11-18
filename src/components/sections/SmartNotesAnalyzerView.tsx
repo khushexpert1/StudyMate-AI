@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { COURSES } from '../../data/demoData';
 import { analyzeNotesWithAi, ApiError, extractNotesFile } from '../../services/api';
+import { downloadSampleEducationalPdf } from '../../services/pdf';
 import { ApiHealthStatus, NoteAnalysis, StudyNoteDoc } from '../../types/study';
 import { AiStatusBanner } from '../AiStatusBanner';
 
@@ -21,6 +22,7 @@ interface SmartNotesAnalyzerViewProps {
   onAddNote: (doc: Omit<StudyNoteDoc, 'id' | 'uploadedAt' | 'isDemo'>) => StudyNoteDoc;
   onSaveAnalysis: (noteId: string, analysis: NoteAnalysis) => void;
   onRemoveNote: (id: string) => void;
+  onOpenSetupGuide?: () => void;
 }
 
 export const SmartNotesAnalyzerView: React.FC<SmartNotesAnalyzerViewProps> = ({
@@ -30,6 +32,7 @@ export const SmartNotesAnalyzerView: React.FC<SmartNotesAnalyzerViewProps> = ({
   onAddNote,
   onSaveAnalysis,
   onRemoveNote,
+  onOpenSetupGuide,
 }) => {
   const activeSubjects = subjects.length > 0 ? subjects : [...COURSES];
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -160,14 +163,14 @@ export const SmartNotesAnalyzerView: React.FC<SmartNotesAnalyzerViewProps> = ({
           </p>
         </div>
 
-        <a
-          href="/api/sample-notes/pdf"
-          download="AI_ML_Sem1_Data_Driven_AI_Sample_Notes.pdf"
+        <button
+          type="button"
+          onClick={downloadSampleEducationalPdf}
           className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-lg border border-violet-500/40 bg-violet-600/15 text-violet-200 hover:bg-violet-600/25 transition-colors whitespace-nowrap self-start sm:self-auto shrink-0"
         >
           <Download className="h-3.5 w-3.5" />
           <span>Download Sample PDF (DEMO DATA)</span>
-        </a>
+        </button>
       </div>
 
       <AiStatusBanner
@@ -176,6 +179,7 @@ export const SmartNotesAnalyzerView: React.FC<SmartNotesAnalyzerViewProps> = ({
         successMessage={successMsg}
         onDismissError={() => setErrorMsg(null)}
         onDismissSuccess={() => setSuccessMsg(null)}
+        onOpenSetupGuide={onOpenSetupGuide}
       />
 
       {/* Upload Dropzone */}

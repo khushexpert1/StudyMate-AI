@@ -192,4 +192,5 @@ export interface ApiHealthStatus {
   geminiConfigured: boolean;
   aiFeaturesEnabled: boolean;
   model: string;
+  keySource?: 'env' | 'localStorage' | 'none';
 }

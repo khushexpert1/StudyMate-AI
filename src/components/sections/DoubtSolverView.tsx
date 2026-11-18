@@ -20,6 +20,7 @@ interface DoubtSolverViewProps {
     reply: { role: 'assistant' | 'system-notice'; content: string }
   ) => void;
   onClearHistory: () => void;
+  onOpenSetupGuide?: () => void;
 }
 
 export const DoubtSolverView: React.FC<DoubtSolverViewProps> = ({
@@ -32,6 +33,7 @@ export const DoubtSolverView: React.FC<DoubtSolverViewProps> = ({
   onSelectThread,
   onAppendExchange,
   onClearHistory,
+  onOpenSetupGuide,
 }) => {
   const activeSubjects = subjects.length > 0 ? subjects : [...COURSES];
   const activeThread = threads.find((t) => t.id === activeThreadId) ?? threads[0] ?? null;
@@ -162,6 +164,7 @@ export const DoubtSolverView: React.FC<DoubtSolverViewProps> = ({
         apiHealth={apiHealth}
         errorMessage={errorMsg}
         onDismissError={() => setErrorMsg(null)}
+        onOpenSetupGuide={onOpenSetupGuide}
       />
 
       {/* Quick-Test Sample Topics Bar */}
