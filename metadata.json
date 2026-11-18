@@ -1,0 +1,6 @@
+{
+  "name": "StudyMate AI – Your Personal Study Assistant",
+  "description": "A modern AI-powered study workspace and academic progress dashboard designed for college students.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
